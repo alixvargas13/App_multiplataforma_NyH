@@ -18,13 +18,7 @@ export const serviceCardStyles = StyleSheet.create({
     marginBottom: 16, // Espaciado entre tarjetas
     borderWidth: 1,
     borderColor: '#e2e8f0', // Borde sutil
-    shadowColor: '#000', // Sombra para iOS
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', // Sombra para web
     elevation: 8, // Sombra para Android (Material Design)
   },
 

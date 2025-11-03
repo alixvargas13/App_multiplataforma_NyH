@@ -1,13 +1,15 @@
-// Configuración base de la API
-const API_BASE_URL = 'http://localhost:5262'; // URL HTTP para desarrollo local
+import { Platform } from 'react-native';
+import { authService } from './servicioAutentificacion';
 
-// 🎭 Modo temporal - simular login exitoso mientras arreglan la API
-const BYPASS_API_ERROR = true;
+// Configuración base de la API (detecta automáticamente web vs móvil)
+const API_BASE_URL = Platform.OS === 'web' 
+  ? 'http://localhost:44306'  // Web: localhost con HTTP
+  : 'http://192.168.137.1:44306';  // Móvil: IP local con HTTP
 
 // Tipos de datos según la especificación de tu API .NET
 export interface LoginRequest {
-  usuario: string;
-  contrasena: string;
+  Usuario: string;     // Con mayúscula según el API
+  Contraseña: string;  // Con mayúscula según el API y con ñ
 }
 
 export interface ApiResponse {
@@ -32,17 +34,32 @@ class ApiService {
   // Método genérico para hacer peticiones HTTP
   private async makeRequest<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    requiresAuth: boolean = true
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     
-    const defaultOptions: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    // Obtener headers con autenticación si es necesario
+    let headers: HeadersInit = {
+      'Content-Type': 'application/json',
     };
 
-    const finalOptions = { ...defaultOptions, ...options };
+    if (requiresAuth) {
+      headers = await authService.getAuthHeaders();
+    }
+
+    const defaultOptions: RequestInit = {
+      headers,
+    };
+
+    const finalOptions = { 
+      ...defaultOptions, 
+      ...options,
+      headers: {
+        ...headers,
+        ...(options.headers || {}),
+      }
+    };
 
     try {
       console.log(` ***Haciendo petición a: ${url} ***`);
@@ -72,80 +89,53 @@ class ApiService {
     }
   }
 
-  // Endpoint de login
+  // Endpoint de login - Ahora usa authService con JWT
   async login(usuario: string, contrasena: string): Promise<LoginResponse> {
-    // 🎭 SIMULACIÓN TEMPORAL - Login exitoso sin API
-    if (BYPASS_API_ERROR) {
-      console.log('Login exitoso! (modo temporal)');
+    console.log('🔐 Llamando al login con JWT...');
+    
+    try {
+      // Usar el servicio de autenticación con JWT
+      const response = await authService.login(usuario, contrasena);
       
-      // Simular un pequeño delay como si fuera una petición real
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Verificar credenciales básicas
-      if (usuario.trim() && contrasena.trim()) {
+      if (response.token) {
+        // Login exitoso - retornar en formato compatible
         return {
           estatusEjecucion: 1,
-          mensajeCiudadano: `¡Bienvenido ${usuario}! Login simulado exitosamente`,
-          mensajeTecnico: 'Simulación temporal mientras se arregla la API'
+          mensajeCiudadano: response.message || `¡Bienvenido ${usuario}!`,
+          mensajeTecnico: 'Login exitoso con JWT'
         };
       } else {
+        // Login fallido
         return {
           estatusEjecucion: 0,
-          mensajeCiudadano: 'Por favor completa todos los campos',
-          mensajeTecnico: 'Campos vacíos detectados'
+          mensajeCiudadano: response.message || 'Usuario o contraseña incorrectos',
+          mensajeTecnico: response.error || 'Error en autenticación'
         };
       }
-    }
-    
-    // Código original para cuando la API funcione
-    const loginData: LoginRequest = { usuario, contrasena };
-    
-    return this.makeRequest<LoginResponse>('/General/login', {
-      method: 'POST',
-      body: JSON.stringify(loginData),
-    });
-  }
-
-  // Endpoint de nómina
-  async getNomina(): Promise<ApiResponse> {
-    // 🎭 SIMULACIÓN TEMPORAL - Datos de nómina
-    if (BYPASS_API_ERROR) {
-      console.log('Simulando datos de nómina (modo temporal)');
-      
-      // Simular delay de petición
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
+    } catch (error) {
+      console.error('❌ Error en login:', error);
       return {
-        estatusEjecucion: 1,
-        mensajeCiudadano: 'Datos de nómina obtenidos exitosamente',
-        mensajeTecnico: 'Salario: $25,000 MXN | Último pago: 15/Oct/2025 | Estado: Activo'
+        estatusEjecucion: 0,
+        mensajeCiudadano: 'Error al conectar con el servidor',
+        mensajeTecnico: error instanceof Error ? error.message : 'Error desconocido'
       };
     }
-    
+  }
+
+  // Endpoint de nómina (requiere autenticación)
+  async getNomina(): Promise<ApiResponse> {
+    console.log('📊 Obteniendo datos de nómina...');
     return this.makeRequest<ApiResponse>('/General/nomina', {
       method: 'GET',
-    });
+    }, true); // true = requiere autenticación JWT
   }
 
-  // Endpoint de hospedaje
+  // Endpoint de hospedaje (requiere autenticación)
   async getHospedaje(): Promise<ApiResponse> {
-    // 🎭 SIMULACIÓN TEMPORAL - Datos de hospedaje
-    if (BYPASS_API_ERROR) {
-      console.log('🏨 Simulando datos de hospedaje (modo temporal)');
-      
-      // Simular delay de petición
-      await new Promise(resolve => setTimeout(resolve, 700));
-      
-      return {
-        estatusEjecucion: 1,
-        mensajeCiudadano: 'Información de hospedaje disponible',
-        mensajeTecnico: '3 hoteles disponibles | Hotel Plaza: $1,200/noche | Hotel Centro: $800/noche'
-      };
-    }
-    
+    console.log('🏨 Obteniendo datos de hospedaje...');
     return this.makeRequest<ApiResponse>('/General/hospedaje', {
       method: 'GET',
-    });
+    }, true); // true = requiere autenticación JWT
   }
 
   // Método para cambiar la URL base (útil para desarrollo/producción)

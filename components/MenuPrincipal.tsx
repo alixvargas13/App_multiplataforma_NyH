@@ -38,20 +38,20 @@ import { TopBar } from './ui/TopBar';
  * Define todas las props necesarias para el funcionamiento del menú principal
  */
 interface MenuPrincipalProps {
-  usuario: string;                              // 👤 Nombre del usuario logueado
-  menuVisible: boolean;                         // 🍔 Estado del menú hamburguesa (abierto/cerrado)
-  setMenuVisible: (visible: boolean) => void;   // 🔄 Función para mostrar/ocultar menú
-  currentView: string;                          // 📱 Vista actual ('inicio', 'nomina', 'hospedaje', 'busqueda')
-  setCurrentView: (view: string) => void;       // 🔄 Función para cambiar de vista
-  nominaData: any;                              // 💰 Datos de nómina del usuario
-  hospedajeData: any;                           // 🏨 Datos de hospedaje
-  busquedaData: any;                            // 🔍 Resultados de búsqueda RFC
-  setBusquedaData: (data: any) => void;         // 🔄 Función para actualizar resultados de búsqueda
-  loadingData: boolean;                         // ⏳ Estado de carga de datos
-  handleGetNomina: () => void;                  // 🎯 Función para obtener datos de nómina
-  handleGetHospedaje: () => void;               // 🎯 Función para obtener datos de hospedaje
-  handleBusquedaRfc: (rfc: string) => void;     // 🎯 Función para buscar RFC
-  handleLogout: () => void;                     // 🚪 Función para cerrar sesión
+  usuario: string;                                         // Nombre del usuario logueado
+  menuVisible: boolean;                               // Estado del menú hamburguesa (abierto/cerrado)
+  setMenuVisible: (visible: boolean) => void; // Función para mostrar/ocultar menú
+  currentView: string;                                  // Vista actual ('inicio', 'nomina', 'hospedaje', 'busqueda')
+  setCurrentView: (view: string) => void;      // Función para cambiar de vista
+  nominaData: any;                                   // Datos de nómina del usuario
+  hospedajeData: any;                              // Datos de hospedaje
+  busquedaData: any;                               // Resultados de búsqueda RFC
+  setBusquedaData: (data: any) => void;    // Función para actualizar resultados de búsqueda
+  loadingData: boolean;                            // Estado de carga de datos
+  handleGetNomina: () => void;                // Función para obtener datos de nómina
+  handleGetHospedaje: () => void;           // Función para obtener datos de hospedaje
+  handleBusquedaRfc: (rfc: string) => void; // Función para buscar RFC
+  handleLogout: () => void;                       // Función para cerrar sesión
 }
 
 export function MenuPrincipal({

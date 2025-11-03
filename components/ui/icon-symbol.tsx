@@ -24,6 +24,7 @@ const MAPPING = {
   'building.2.fill': 'business',
   'power': 'power-settings-new',
   'arrow.right.square': 'exit-to-app',
+  'doc.text.fill': 'description',
 } as IconMapping;
 
 /**

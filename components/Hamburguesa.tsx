@@ -116,7 +116,8 @@ export function Hamburguesa({
           >
             <Image 
               source={require('@/assets/images/search-icon.png')} 
-              style={currentView === 'busqueda' ? styles.searchIconActive : styles.searchIcon}
+              style={{ width: 24, height: 24 }}
+              tintColor={currentView === 'busqueda' ? "rgb(95,27,45)" : "#6b7280"}
             />
             <Text style={[styles.menuItemText, currentView === 'busqueda' && styles.menuItemTextActive]}>
               Búsqueda
@@ -152,14 +153,5 @@ export function Hamburguesa({
 }
 
 /**
- * 🎨 NOTA: Los estilos han sido movidos a Hamburguesa.styles.ts
- * 
- * Esto es una buena práctica porque:
- * - ✅ Separa la lógica de la presentación
- * - ✅ Hace el componente más limpio y fácil de leer
- * - ✅ Permite reutilizar estilos en otros componentes
- * - ✅ Facilita el mantenimiento del código
- * - ✅ Mejora la organización del proyecto
- * - ✅ Proporciona mejor documentación del menú lateral
- * - 🍔 Mantiene el componente hamburguesa modular y escalable
+ *  NOTA: Los estilos han sido movidos a Hamburguesa.styles.ts
  */

@@ -1,8 +1,12 @@
 // Servicio para consultas de RFC y verificación de datos
 // Integración con ASP.NET Framework 4.8 API
+import { Platform } from 'react-native';
+import { authService } from './servicioAutentificacion';
 
 // Configuración de la API de consultas
-const CONSULTA_API_BASE_URL = 'http://localhost:5262'; // Ajustar según tu API
+const CONSULTA_API_BASE_URL = Platform.OS === 'web' 
+  ? 'http://localhost:44306'
+  : 'http://192.168.137.1:44306';
 
 // Interfaces para la consulta de RFC
 export interface ConsultaRfcRequest {
@@ -43,21 +47,41 @@ class ConsultaService {
   // Método genérico para hacer peticiones
   private async makeRequest<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    requiresAuth: boolean = true
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     
-    const defaultOptions: RequestInit = {
-      headers: {
+    // Obtener headers con autenticación si es necesario
+    let headers: HeadersInit;
+
+    if (requiresAuth) {
+      headers = await authService.getAuthHeaders();
+      console.log('Headers con autenticación obtenidos');
+    } else {
+      headers = {
         'Content-Type': 'application/json',
-      },
+        'Accept': 'application/json',
+      };
+    }
+    
+    const defaultOptions: RequestInit = {
+      headers,
     };
 
-    const finalOptions = { ...defaultOptions, ...options };
+    const finalOptions = { 
+      ...defaultOptions, 
+      ...options,
+      headers: {
+        ...headers,
+        ...(options.headers || {}),
+      }
+    };
 
     try {
-      console.log(`🔍 Haciendo consulta a: ${url}`);
-      console.log(`📤 Parámetros:`, finalOptions.body);
+      console.log(`Haciendo consulta a: ${url}`);
+      console.log(`Parámetros:`, finalOptions.body);
+      console.log(`Headers enviados:`, finalOptions.headers);
       
       const response = await fetch(url, finalOptions);
       
@@ -96,41 +120,26 @@ class ConsultaService {
     // Normalizar RFC (mayúsculas, sin espacios)
     const rfcNormalizado = rfc.trim().toUpperCase();
 
-    // Por ahora, simulamos la respuesta hasta que conectes tu API real
     console.log(`Consultando RFC: ${rfcNormalizado}`);
-    
-    // Simular delay de red
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Datos simulados basados en tu ejemplo
-    const resultadoSimulado: ConsultaRfcResponse[] = [
-      {
-        idProceso: 1,
-        rfc: rfcNormalizado,
-        nombre: "EJEMPLO PERSONA FISICA",
-        nombreComercial: "COMERCIAL EJEMPLO",
-        controlPersona: 1035591,
-        controlMateria: 1195398,
-        sistema: "NOMINA",
-        tipoSucursal: "MATRIZ",
-        situacion: "ACTIVA",
-        mensajeTecnico: "Consulta realizada exitosamente (simulado)"
-      }
-    ];
 
-    return resultadoSimulado;
-
-    // TODO: Reemplazar con la llamada real a tu API
-    /*
-    return this.makeRequest<ConsultaRfcResponse[]>('/api/consulta-rfc', {
-      method: 'POST',
-      body: JSON.stringify({
-        pc_rfc: rfcNormalizado,
-        pc_nombre: '', // Opcional por ahora
-        pc_nomcom: ''  // Opcional por ahora
-      }),
+    // Construir query string
+    const queryParams = new URLSearchParams({
+      rfc: rfcNormalizado,
     });
-    */
+
+    try {
+      // Usar makeRequest con autenticación JWT
+      return await this.makeRequest<ConsultaRfcResponse[]>(
+        `/api/general/consultarfc?${queryParams.toString()}`,
+        {
+          method: 'POST',
+        },
+        true // Requiere autenticación
+      );
+    } catch (error) {
+      console.error('Error en consultarPorRfc:', error);
+      throw error;
+    }
   }
 
   // Consulta completa (RFC + nombre + nombre comercial)
@@ -139,18 +148,35 @@ class ConsultaService {
     if (!params.rfc || params.rfc.trim().length === 0) {
       throw new Error('El RFC es obligatorio');
     }
+    if (!params.nombre || params.nombre.trim().length === 0) {
+      throw new Error('El nombre es obligatorio');
+    }
 
-    const parametros = {
-      pc_rfc: params.rfc.trim().toUpperCase(),
-      pc_nombre: params.nombre?.trim() || '',
-      pc_nomcom: params.nombreComercial?.trim() || ''
-    };
+    console.log(`🔍 Consulta completa RFC: ${params.rfc}`);
 
-    // TODO: Implementar cuando tengas el endpoint completo
-    console.log('🔍 Consulta completa:', parametros);
+    // Construir query string
+    const queryParams = new URLSearchParams({
+      rfc: params.rfc.trim(),
+      nombre: params.nombre.trim(),
+    });
     
-    // Por ahora, usar la misma lógica que consultarPorRfc
-    return this.consultarPorRfc(params.rfc);
+    if (params.nombreComercial) {
+      queryParams.append('nombreComercial', params.nombreComercial.trim());
+    }
+
+    try {
+      // Usar makeRequest con autenticación JWT
+      return await this.makeRequest<ConsultaRfcResponse[]>(
+        `/api/general/consultarfc?${queryParams.toString()}`,
+        {
+          method: 'POST',
+        },
+        true // Requiere autenticación
+      );
+    } catch (error) {
+      console.error('❌ Error en consultarCompleta:', error);
+      throw error;
+    }
   }
 
   // Validar formato de RFC (básico)

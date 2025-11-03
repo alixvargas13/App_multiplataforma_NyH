@@ -17,10 +17,7 @@ export const topBarStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     elevation: 4, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', // Sombra para web
   },
 
   // BOTÓN HAMBURGUESA

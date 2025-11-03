@@ -1,30 +1,28 @@
 /**
- * 🎨 ESTILOS PARA BUSQUEDA RFC VIEW
+ * ESTILOS PARA BUSQUEDA RFC VIEW
  * 
  * Archivo separado que contiene todos los estilos para el componente BusquedaRfcView.
  * Esta separación mejora la organización del código y facilita el mantenimiento.
  * 
- * 📁 Estructura de estilos:
- * - 🔍 Estilos del contenedor y header
- * - 📝 Estilos del formulario de búsqueda
- * - 🎯 Estilos de inputs y botones
- * - 📊 Estilos de resultados y tarjetas
- * - 📋 Estilos de tabla para información detallada
- * - ⚡ Estilos de estados (loading, empty, error)
- * 
- * 🎯 Patrones de diseño utilizados:
+ * Estructura de estilos:
+ * - Estilos del contenedor y header
+ * - Estilos del formulario de búsqueda
+ * - Estilos de inputs y botones
+ * -  Estilos de resultados y tarjetas
+ * - Estilos de tabla para información detallada
+ * - Estilos de estados (loading, empty, error)
+ *
+ * Patrones de diseño utilizados:
  * - Colores consistentes con el tema corporativo
  * - Spacing uniforme (8px, 12px, 16px, 20px)
  * - Sombras sutiles para profundidad
  * - Tipografía jerárquica clara
- * 
- * @author Tu equipo de desarrollo ❤️
  */
 
 import { StyleSheet } from 'react-native';
 
 export const busquedaRfcStyles = StyleSheet.create({
-  // 🏠 CONTENEDOR PRINCIPAL
+  // CONTENEDOR PRINCIPAL
   busquedaContainer: {
     flex: 1,
     padding: 12, // Reducido de 20 para aprovechar más espacio en móvil
@@ -46,7 +44,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     marginLeft: 12,
   },
 
-  // 📝 FORMULARIO DE BÚSQUEDA
+  // FORMULARIO DE BÚSQUEDA
   busquedaForm: {
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -62,7 +60,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     elevation: 3, // Para Android
   },
 
-  // 🔤 INPUTS Y ETIQUETAS
+  // INPUTS Y ETIQUETAS
   inputGroup: {
     marginBottom: 20,
   },
@@ -94,7 +92,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     color: '#1f2937',
   },
 
-  // ⚠️ MENSAJES DE ERROR
+  // MENSAJES DE ERROR
   errorText: {
     fontSize: 12,
     color: '#ef4444', // Rojo para errores
@@ -102,7 +100,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     fontStyle: 'italic',
   },
 
-  // 🎯 BOTÓN DE BÚSQUEDA
+  // BOTÓN DE BÚSQUEDA
   buscarButton: {
     backgroundColor: 'rgb(95,27,45)', // Color corporativo
     paddingVertical: 14,
@@ -127,7 +125,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // ⏳ ESTADO DE CARGA
+  // ESTADO DE CARGA
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -140,7 +138,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // 📊 CONTENEDOR DE RESULTADOS
+  // CONTENEDOR DE RESULTADOS
   resultadosContainer: {
     flex: 1,
   },
@@ -154,7 +152,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  // 🎴 TARJETA DE RESULTADO CON SOMBRAS MEJORADAS
+  // TARJETA DE RESULTADO CON SOMBRAS MEJORADAS
   resultadoCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16, // Bordes más redondeados para elegancia
@@ -162,7 +160,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     marginBottom: 20, // Más espacio entre tarjetas
     borderWidth: 1,
     borderColor: '#e5e7eb', // Borde muy sutil
-    // 💎 SOMBRAS PROFESIONALES MEJORADAS
+    // SOMBRAS PROFESIONALES MEJORADAS
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -186,7 +184,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     color: 'rgb(95,27,45)', // Color corporativo
   },
 
-  // 🏷️ BADGES DE ESTADO
+  // BADGES DE ESTADO
   estadoBadge: {
     paddingHorizontal: 12,
     paddingVertical: 4,
@@ -207,7 +205,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     color: '#dc2626', // Rojo para texto de estado inactivo
   },
 
-  // 📝 INFORMACIÓN DEL RESULTADO
+  // INFORMACIÓN DEL RESULTADO
   resultadoNombre: {
     fontSize: 16,
     fontWeight: '600',
@@ -221,7 +219,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     fontStyle: 'italic',
   },
 
-  // 📋 DETALLES DEL RESULTADO
+  // DETALLES DEL RESULTADO
   resultadoDetalles: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -240,7 +238,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     color: '#374151', // Gris oscuro
   },
 
-  // 🔧 MENSAJE TÉCNICO
+  // MENSAJE TÉCNICO
   mensajeTecnico: {
     fontSize: 12,
     color: '#6b7280', // Gris medio
@@ -251,28 +249,39 @@ export const busquedaRfcStyles = StyleSheet.create({
     fontStyle: 'italic',
   },
 
-  // 📭 ESTADO VACÍO
+  // Estilo de resultado de consulta RFC - ESTADO VACÍO
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
+    marginTop: 20,
   },
   emptyText: {
     fontSize: 16,
-    color: '#9ca3af', // Gris claro
+    fontWeight: 'bold', // Texto en negrita
+    color: '#5F1B2D', // Rojo oscuro para mejor contraste
     textAlign: 'center',
     lineHeight: 24,
+    backgroundColor: '#ffffff', // Fondo blanco
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    borderRadius: 16, // Bordes redondeados
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Sombra para Android
   },
 
-  // 📊 ESTILOS DE TABLA PARA RESULTADOS CON MEJORAS PROFESIONALES
+  // ESTILOS DE TABLA PARA RESULTADOS CON MEJORAS PROFESIONALES
   tablaContainer: {
     marginTop: 15,
     borderWidth: 1,
     borderColor: '#d1d5db', // Borde gris claro
     borderRadius: 12, // Bordes más redondeados
     backgroundColor: '#ffffff',
-    // 💎 SOMBRA SUTIL PARA LA TABLA
+    // SOMBRA SUTIL PARA LA TABLA
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -284,7 +293,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     overflow: 'hidden', // Para que los bordes redondeados funcionen bien
   },
   
-  // 📋 FILAS DE LA TABLA CON COLORES ALTERNADOS
+  // FILAS DE LA TABLA CON COLORES ALTERNADOS
   tablaFila: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -319,10 +328,10 @@ export const busquedaRfcStyles = StyleSheet.create({
   tablaFilaQuadrupleAlterna: {
     flexDirection: 'row',
     borderBottomWidth: 0,
-    backgroundColor: '#ffffff', // Verde locochón más suave para variedad 🌿
+    backgroundColor: '#ffffff', // Verde locochón más suave para variedad 
   },
-  
-  // 📊 COLUMNAS DE LA TABLA CON MEJORAS PROFESIONALES
+
+  // COLUMNAS DE LA TABLA CON MEJORAS PROFESIONALES
   tablaColumna: {
     flex: 1,
     padding: 14, // Más padding para comodidad
@@ -336,8 +345,8 @@ export const busquedaRfcStyles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: '#e5e7eb',
   },
-  
-  // 📝 HEADERS Y CELDAS CON TIPOGRAFÍA MEJORADA
+
+  // HEADERS Y CELDAS CON TIPOGRAFÍA MEJORADA
   tablaHeader: {
     fontSize: 11, // Ligeramente más pequeño para elegancia
     fontWeight: '700', // Más bold para mejor contraste
@@ -353,7 +362,7 @@ export const busquedaRfcStyles = StyleSheet.create({
     fontWeight: '500', // Ligeramente más bold
   },
 
-  // 🔘 BOTÓN VER MÁS - ESQUINA INFERIOR DERECHA
+  // BOTÓN VER MÁS - ESQUINA INFERIOR DERECHA
   botonContainer: {
     alignItems: 'flex-end', // Alinea el botón a la derecha
     marginTop: 15,
@@ -404,29 +413,29 @@ export const busquedaRfcStyles = StyleSheet.create({
 });
 
 /**
- * 💡 NOTAS DE DESARROLLO:
+ * NOTAS DE DESARROLLO:
  * 
- * 🎨 Paleta de colores:
+ * Paleta de colores:
  * - Principal: rgb(95,27,45) - Vino corporativo
  * - Secundario: rgb(72,71,71) - Gris oscuro
  * - Texto: #374151, #6b7280, #9ca3af - Escala de grises
  * - Error: #ef4444, #dc2626 - Rojos para errores
  * - Éxito: #dcfce7, #059669 - Verdes para éxito
- * 
- * 📐 Espaciado:
+ *
+ * Espaciado:
  * - Micro: 4px, 5px
  * - Pequeño: 8px, 10px, 12px
  * - Medio: 15px, 16px, 20px
  * - Grande: 24px, 40px
- * 
- * 🎯 Jerarquía tipográfica:
+ *
+ * Jerarquía tipográfica:
  * - Título principal: 24px, bold
  * - Título sección: 18px, semibold
  * - Texto normal: 16px, regular
  * - Texto pequeño: 14px, regular
  * - Texto auxiliar: 12px, regular
- * 
- * 📱 Consideraciones responsive:
+ *
+ * Consideraciones responsive:
  * - Padding consistente de 20px en contenedores principales
  * - Bordes redondeados de 8px y 12px para suavidad
  * - Sombras sutiles para profundidad visual

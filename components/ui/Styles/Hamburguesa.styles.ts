@@ -24,7 +24,7 @@
 import { StyleSheet } from 'react-native';
 
 export const hamburguesaStyles = StyleSheet.create({
-  // 🖼️ OVERLAY Y CONTENEDOR PRINCIPAL
+  // OVERLAY Y CONTENEDOR PRINCIPAL
   sideMenuOverlay: {
     position: 'absolute',
     top: 0,
@@ -44,10 +44,7 @@ export const hamburguesaStyles = StyleSheet.create({
     width: 280, // Ancho fijo del menú
     backgroundColor: '#FFFDED',
     elevation: 8, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
-    shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    boxShadow: '2px 0 8px rgba(0, 0, 0, 0.3)', // Sombra para web
   },
 
   // HEADER DEL USUARIO
@@ -139,45 +136,43 @@ export const hamburguesaStyles = StyleSheet.create({
   searchIcon: {
     width: 24,
     height: 24,
-    tintColor: '#6b7280', // Color por defecto (inactivo)
   },
   searchIconActive: {
     width: 24,
     height: 24,
-    tintColor: 'rgb(95,27,45)', // Color corporativo (activo)
   },
 });
 
 /**
- * 💡 NOTAS DE DESARROLLO:
+ * NOTAS DE DESARROLLO:
  * 
- * 🎨 Paleta de colores:
+ * Paleta de colores:
  * - Principal: rgb(95,27,45) - Vino corporativo para elementos activos
  * - Blanco: #FFFDED - Fondo del menú y avatar
  * - Gris oscuro: #333333 - Texto normal de los items
  * - Gris claro: #f0f0f0, #f8f9fa - Separadores y fondos de estados
  * - Overlay: rgba(0,0,0,0.5) - Fondo semitransparente
  * 
- * 📐 Dimensiones y espaciado:
+ * Dimensiones y espaciado:
  * - Ancho del menú: 280px - Optimal para móvil
  * - Avatar: 60x60px - Tamaño estándar para fotos de perfil
  * - Padding items: 24px horizontal, 16px vertical - Zona de toque cómoda
  * - Z-index: 1000 - Asegura superposición correcta
  * 
- * 🎯 Interacciones:
+ * Interacciones:
  * - Overlay táctil para cerrar menú
  * - Indicador visual de item activo (borde derecho + fondo)
  * - Transiciones suaves entre estados
  * - Iconografía SF Symbols consistente
  * 
- * 📱 Consideraciones de UX:
+ * Consideraciones de UX:
  * - Menú desliza desde la derecha (flexDirection: 'row-reverse')
  * - Header con información del usuario siempre visible
  * - Estados activos claramente diferenciados
  * - Zona de toque optimizada para dedos
  * - Sombras para dar sensación de profundidad
  * 
- * 🔧 Compatibilidad:
+ * Compatibilidad:
  * - Elevation para Android (Material Design)
  * - Shadow properties para iOS (Human Interface Guidelines)
  * - Padding top dinámico para diferentes status bars
