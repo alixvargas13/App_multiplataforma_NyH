@@ -1,10 +1,8 @@
-import { Platform } from 'react-native';
-import { authService } from './servicioAutentificacion';
+import { API_CONFIG } from './config';
+import { servicioAutentificacion } from './servicioAutentificacion';
 
-// Configuración base de la API (detecta automáticamente web vs móvil)
-const API_BASE_URL = Platform.OS === 'web' 
-  ? 'http://localhost:44306'  // Web: localhost con HTTP
-  : 'http://192.168.137.1:44306';  // Móvil: IP local con HTTP
+// Configuración base de la API (ahora centralizada en config.ts)
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 // Tipos de datos según la especificación de tu API .NET
 export interface LoginRequest {
@@ -45,7 +43,7 @@ class ApiService {
     };
 
     if (requiresAuth) {
-      headers = await authService.getAuthHeaders();
+      headers = await servicioAutentificacion.getAuthHeaders();
     }
 
     const defaultOptions: RequestInit = {
@@ -61,9 +59,15 @@ class ApiService {
       }
     };
 
+    const controller = new AbortController();// Crear un AbortController antes del fetch
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // Timeout de 60 segundos (1 minuto para debugging)
+
     try {
       console.log(` ***Haciendo petición a: ${url} ***`);
-      const response = await fetch(url, finalOptions);
+      const response = await fetch(url, {
+        ...finalOptions,
+        signal: controller.signal  // spread operator ( "..." "Desempaca" o "expande" todas las propiedades del objeto finalOptions dentro del nuevo objeto.)
+      });
       
       // Manejo de códigos de estado HTTP
       if (!response.ok) {
@@ -83,19 +87,28 @@ class ApiService {
       const data = await response.json();
       console.log('Respuesta recibida:', data);
       return data;
-    } catch (error) {
-      console.error('Error en petición:', error);
-      throw error;
+    } catch (error: any) 
+      {
+        // Detectar si fue timeout
+        if (error.name === 'AbortError') {
+          console.error('Timeout: La petición tardó demasiado');
+          throw new Error('La petición tardó demasiado. Revisa tu conexión.');
+        }
+        console.error('Error en petición:', error);
+        throw error;
+      }
+    finally {
+      clearTimeout(timeoutId);  // Limpiar el timeout en finally
     }
   }
 
-  // Endpoint de login - Ahora usa authService con JWT
+  // Endpoint de login - Ahora usa servicioAutentificacion con JWT
   async login(usuario: string, contrasena: string): Promise<LoginResponse> {
-    console.log('🔐 Llamando al login con JWT...');
+    console.log('Llamando al login con JWT...');
     
     try {
       // Usar el servicio de autenticación con JWT
-      const response = await authService.login(usuario, contrasena);
+      const response = await servicioAutentificacion.login(usuario, contrasena);
       
       if (response.token) {
         // Login exitoso - retornar en formato compatible
@@ -124,7 +137,7 @@ class ApiService {
 
   // Endpoint de nómina (requiere autenticación)
   async getNomina(): Promise<ApiResponse> {
-    console.log('📊 Obteniendo datos de nómina...');
+    console.log('Obteniendo datos de nómina...');
     return this.makeRequest<ApiResponse>('/General/nomina', {
       method: 'GET',
     }, true); // true = requiere autenticación JWT
@@ -132,7 +145,7 @@ class ApiService {
 
   // Endpoint de hospedaje (requiere autenticación)
   async getHospedaje(): Promise<ApiResponse> {
-    console.log('🏨 Obteniendo datos de hospedaje...');
+    console.log('Obteniendo datos de hospedaje...');
     return this.makeRequest<ApiResponse>('/General/hospedaje', {
       method: 'GET',
     }, true); // true = requiere autenticación JWT

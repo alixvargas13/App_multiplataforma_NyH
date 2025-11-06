@@ -1,6 +1,6 @@
-# 🔐 Implementación de Login con JWT
+# Implementación de Login con JWT
 
-## 📁 Archivos Creados
+## Archivos Creados
 
 ### 1. **`services/authService.ts`**
 Servicio principal para manejar la autenticación con JWT.

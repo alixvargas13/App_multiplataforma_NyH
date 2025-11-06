@@ -1,7 +1,7 @@
 // Servicio para consultas de RFC y verificación de datos
 // Integración con ASP.NET Framework 4.8 API
 import { Platform } from 'react-native';
-import { authService } from './servicioAutentificacion';
+import { servicioAutentificacion } from './servicioAutentificacion';
 
 // Configuración de la API de consultas
 const CONSULTA_API_BASE_URL = Platform.OS === 'web' 
@@ -56,7 +56,7 @@ class ConsultaService {
     let headers: HeadersInit;
 
     if (requiresAuth) {
-      headers = await authService.getAuthHeaders();
+      headers = await servicioAutentificacion.getAuthHeaders();
       console.log('Headers con autenticación obtenidos');
     } else {
       headers = {

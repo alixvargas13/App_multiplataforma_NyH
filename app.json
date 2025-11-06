@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "test_react",
-    "slug": "test_react",
+    "name": "nyh-digital",
+    "slug": "nyh-digital",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "testreact",
+    "scheme": "nyh-digital",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

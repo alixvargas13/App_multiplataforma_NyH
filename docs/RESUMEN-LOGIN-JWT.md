@@ -133,7 +133,7 @@ function Dashboard() {
 
 ---
 
-## 🔐 Headers Enviados en Peticiones Autenticadas
+## Headers Enviados en Peticiones Autenticadas
 
 Antes (sin JWT):
 ```javascript
@@ -204,7 +204,7 @@ El servidor debe retornar:
 
 ---
 
-## 🎨 Personalización
+## Personalización
 
 ### Cambiar estilos del login:
 Editar `components/ui/Styles/LoginView.styles.ts`
@@ -223,9 +223,3 @@ Editar `components/LoginView.tsx`, función `handleLogin()`
 ---
 
 ## ✨ ¡Listo para usar!
-
-Todo está configurado y listo para usar el login con JWT. 
-
-**Siguiente paso:** Integrar `LoginView` en tu navegación principal.
-
-¿Necesitas ayuda con algo más? 😊

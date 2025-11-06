@@ -1,14 +1,19 @@
 {
-  "name": "test_react",
+  "name": "nyh-digital",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "prestart": "node ./scripts/get-my-ip.js",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
+    "preandroid": "node ./scripts/get-my-ip.js",
     "ios": "expo start --ios",
+    "preios": "node ./scripts/get-my-ip.js",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "preweb": "node ./scripts/get-my-ip.js",
+    "lint": "expo lint",
+    "get-ip": "node ./scripts/get-my-ip.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",

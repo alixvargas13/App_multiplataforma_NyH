@@ -3,9 +3,18 @@
 
 import { Platform } from 'react-native';
 
+// 🔧 CONFIGURACIÓN DE RED - cambiar aqui SI LA IP CAMBIA en consulta a nmp run get-ip!
+const NETWORK_CONFIG = {
+  LOCAL_IP: '192.168.137.1',  // la ip cambiará al ejecutar npm start!
+  PORT: '44306',
+  PROTOCOL: 'http',
+};
+
 export const API_CONFIG = {
   // URL base del API (detecta automáticamente web vs móvil)
-  BASE_URL: Platform.OS === 'web' ? 'http://localhost:44306' : 'http://192.168.137.1:44306',
+  BASE_URL: Platform.OS === 'web' 
+    ? `${NETWORK_CONFIG.PROTOCOL}://localhost:${NETWORK_CONFIG.PORT}`
+    : `${NETWORK_CONFIG.PROTOCOL}://${NETWORK_CONFIG.LOCAL_IP}:${NETWORK_CONFIG.PORT}`,
   
   // Endpoints
   ENDPOINTS: {

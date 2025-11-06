@@ -1,17 +1,16 @@
 // Servicio de autenticación con JWT
 // Maneja login, logout y almacenamiento del token
 
-import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_CONFIG } from './config';
 
-// Configuración base de la API (detecta automáticamente web vs móvil)
-const API_BASE_URL = Platform.OS === 'web' 
-  ? 'http://localhost:44306'  // Web: localhost con HTTP
-  : 'http://192.168.137.1:44306';  // Móvil: IP local con HTTP
+// Configuración base de la API (ahora centralizada en config.ts)
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
-// Interfaces para el login (según tu API .NET)
+// Interfaces para el login (según el API .NET)
 export interface LoginRequest {
-  Usuario: string;     // Con mayúscula inicial según tu API
-  Contraseña: string;  // Con mayúscula inicial según tu API
+  Usuario: string;     // Con mayúscula inicial según el API
+  Contraseña: string;  // Con mayúscula inicial según el API
 }
 
 export interface LoginResponse {
@@ -21,7 +20,7 @@ export interface LoginResponse {
 }
 
 // Clase para manejar la autenticación
-class AuthService {
+class ServicioAutentificacion {
   private baseUrl: string;
   private tokenKey: string = 'jwt_token';
 
@@ -45,6 +44,10 @@ class AuthService {
       Contraseña: contrasena,
     };
 
+    // Crear AbortController para timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // Timeout de 60 segundos (1 minuto para debugging)
+
     try {
       console.log(`Intentando login en: ${url}`);
       console.log(`Datos a enviar:`, loginData);
@@ -57,6 +60,7 @@ class AuthService {
           'Accept': 'application/json',
         },
         body: JSON.stringify(loginData),
+        signal: controller.signal, // Agregar signal para timeout
       });
 
       console.log(`Response status:`, response.status);
@@ -90,10 +94,11 @@ class AuthService {
 
       // Intentar parsear la respuesta como JSON
       const data = await response.json();
+      console.log('Respuesta de la API:', data);
       
-      // Si el login es exitoso y tenemos un token
+      // Verificar si el API devuelve el token directamente
       if (data.token) {
-        // Guardar el token
+        // Formato: { token: "..." }
         await this.saveToken(data.token);
         console.log('✅ Login exitoso, token guardado');
         
@@ -101,21 +106,73 @@ class AuthService {
           token: data.token,
           message: 'Login exitoso',
         };
-      } else {
-        console.warn('⚠️ Login sin token en respuesta');
+      }
+      
+      // Verificar si el API devuelve formato con estatusEjecucion
+      if (data.estatusEjecucion === 1) {
+        // Formato: { estatusEjecucion: 1, mensajeCiudadano: "...", mensajeTecnico: "..." }
+        // El token podría estar en mensajeTecnico o debemos buscarlo en headers
+        
+        // Intentar extraer el token del header Authorization de la respuesta
+        const authHeader = response.headers.get('Authorization');
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          const token = authHeader.substring(7); // Quitar "Bearer "
+          await this.saveToken(token);
+          console.log('✅ Login exitoso, token guardado desde header');
+          
+          return {
+            token: token,
+            message: data.mensajeCiudadano || 'Login exitoso',
+          };
+        }
+        
+        // Si no está en el header, buscar en otros campos posibles
+        const possibleToken = data.token || data.jwt || data.accessToken;
+        if (possibleToken) {
+          await this.saveToken(possibleToken);
+          console.log('✅ Login exitoso, token guardado');
+          
+          return {
+            token: possibleToken,
+            message: data.mensajeCiudadano || 'Login exitoso',
+          };
+        }
+        
+        console.warn('⚠️ Login exitoso pero no se encontró el token en la respuesta');
+        console.warn('Headers de respuesta:', [...response.headers.entries()]);
+        console.warn('Body de respuesta:', data);
+        
         return {
           error: 'No se recibió token de autenticación',
-          message: 'Error en la respuesta del servidor',
+          message: 'El servidor no devolvió un token válido',
         };
       }
       
-    } catch (error) {
+      // Si llegamos aquí, el login falló
+      console.warn('⚠️ Login sin token en respuesta');
+      return {
+        error: 'No se recibió token de autenticación',
+        message: data.mensajeCiudadano || data.mensaje || 'Error en la respuesta del servidor',
+      };
+      
+    } catch (error: any) {
+      // Detectar si fue timeout
+      if (error.name === 'AbortError') {
+        console.error('Timeout: La petición de login tardó demasiado');
+        return {
+          error: 'Timeout',
+          message: 'La petición tardó demasiado. Revisa tu conexión.',
+        };
+      }
+      
       console.error('❌ Error en la petición de login:', error);
       
       return {
         error: error instanceof Error ? error.message : 'Error desconocido',
         message: 'No se pudo conectar con el servidor',
       };
+    } finally {
+      clearTimeout(timeoutId); // Limpiar timeout
     }
   }
 
@@ -124,14 +181,19 @@ class AuthService {
    * En React Native usa AsyncStorage, en web usa localStorage
    */
   async saveToken(token: string): Promise<void> {
+    console.log('💾 Guardando token:', token.substring(0, 20) + '...');
     try {
       // Para React Native
-      const AsyncStorage = await import('@react-native-async-storage/async-storage');
-      await AsyncStorage.default.setItem(this.tokenKey, token);
+      await AsyncStorage.setItem(this.tokenKey, token);
+      console.log('✅ Token guardado exitosamente en AsyncStorage');
     } catch (error) {
+      console.log('❌ Error guardando token en AsyncStorage:', error);
       // Fallback para web
       if (typeof window !== 'undefined' && window.localStorage) {
         localStorage.setItem(this.tokenKey, token);
+        console.log('✅ Token guardado en localStorage (fallback)');
+      } else {
+        console.log('❌ No se pudo guardar el token en ningún lugar');
       }
     }
   }
@@ -140,14 +202,27 @@ class AuthService {
    * Obtener el token JWT guardado
    */
   async getToken(): Promise<string | null> {
+    console.log('🔍 Buscando token guardado...');
     try {
       // Para React Native
-      const AsyncStorage = await import('@react-native-async-storage/async-storage');
-      return await AsyncStorage.default.getItem(this.tokenKey);
+      const token = await AsyncStorage.getItem(this.tokenKey);
+      if (token) {
+        console.log('✅ Token encontrado en AsyncStorage:', token.substring(0, 20) + '...');
+      } else {
+        console.log('❌ No se encontró token en AsyncStorage');
+      }
+      return token;
     } catch (error) {
+      console.log('❌ Error obteniendo token de AsyncStorage:', error);
       // Fallback para web
       if (typeof window !== 'undefined' && window.localStorage) {
-        return localStorage.getItem(this.tokenKey);
+        const token = localStorage.getItem(this.tokenKey);
+        if (token) {
+          console.log('✅ Token encontrado en localStorage (fallback)');
+        } else {
+          console.log('❌ No se encontró token en localStorage (fallback)');
+        }
+        return token;
       }
       return null;
     }
@@ -159,9 +234,8 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       // Para React Native
-      const AsyncStorage = await import('@react-native-async-storage/async-storage');
-      await AsyncStorage.default.removeItem(this.tokenKey);
-      console.log('👋 Sesión cerrada, token eliminado');
+      await AsyncStorage.removeItem(this.tokenKey);
+      console.log('Sesión cerrada, token eliminado');
     } catch (error) {
       // Fallback para web
       if (typeof window !== 'undefined' && window.localStorage) {
@@ -182,17 +256,18 @@ class AuthService {
    * Obtener headers con el token JWT para peticiones autenticadas
    */
   async getAuthHeaders(): Promise<HeadersInit> {
+    console.log('🔍 Obteniendo headers de autenticación...');
     const token = await this.getToken();
     
     if (!token) {
-      console.warn('⚠️ No hay token disponible');
+      console.warn('⚠️ No hay token disponible para headers');
       return {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       };
     }
 
-    console.log('🔑 Token encontrado, agregando Authorization header');
+    console.log('🔑 Token encontrado para headers:', token.substring(0, 20) + '...');
     
     return {
       'Content-Type': 'application/json',
@@ -203,4 +278,6 @@ class AuthService {
 }
 
 // Exportar instancia única del servicio (Singleton)
-export const authService = new AuthService();
+export const servicioAutentificacion = new ServicioAutentificacion();
+
+

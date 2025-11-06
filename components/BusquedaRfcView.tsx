@@ -1,5 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ConsultaRfcResponse } from '@/services/consultaService';
+import { ConsultaRfcResponse, consultaService } from '@/services/consultaService';
 import React, { useRef, useState } from 'react';
 import { Animated, Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { busquedaRfcStyles as styles } from './ui/Styles/BusquedaRfcView.styles';
@@ -41,7 +41,6 @@ export function BusquedaRfcView({ onBuscar, resultados, loading }: BusquedaRfcVi
     }
     setLoadingApi(true);
     try {
-      const { consultaService } = await import('../services/consultaService');
       const resultados = await consultaService.consultarPorRfc(rfcInput.trim());
       
       // Filtrar resultados inválidos (con ceros, nulos y "Link")

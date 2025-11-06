@@ -1,6 +1,6 @@
 // Hook personalizado para manejar la autenticación
 import { useEffect, useState } from 'react';
-import { authService } from '../services/servicioAutentificacion';
+import { servicioAutentificacion } from '../services/servicioAutentificacion';
 
 export interface UseAuthReturn {
   isAuthenticated: boolean;
@@ -26,11 +26,11 @@ export function useAuth(): UseAuthReturn {
   const checkAuth = async () => {
     setIsLoading(true);
     try {
-      const authenticated = await authService.isAuthenticated();
+      const authenticated = await servicioAutentificacion.isAuthenticated();
       setIsAuthenticated(authenticated);
       
       if (authenticated) {
-        const currentToken = await authService.getToken();
+        const currentToken = await servicioAutentificacion.getToken();
         setToken(currentToken);
       }
     } catch (error) {
@@ -47,7 +47,7 @@ export function useAuth(): UseAuthReturn {
    */
   const login = async (usuario: string, contrasena: string): Promise<boolean> => {
     try {
-      const response = await authService.login(usuario, contrasena);
+      const response = await servicioAutentificacion.login(usuario, contrasena);
       
       if (response.token) {
         setIsAuthenticated(true);
@@ -67,7 +67,7 @@ export function useAuth(): UseAuthReturn {
    */
   const logout = async () => {
     try {
-      await authService.logout();
+      await servicioAutentificacion.logout();
       setIsAuthenticated(false);
       setToken(null);
     } catch (error) {
