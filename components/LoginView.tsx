@@ -1,15 +1,15 @@
 import { apiService, getErrorMessage, isApiSuccess } from '@/services/api';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    ImageBackground,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { IconSymbol } from './ui/icon-symbol';
 import { loginStyles } from './ui/Styles/LoginView.styles';
@@ -278,7 +278,7 @@ export default function LoginView({ onLoginSuccess, onLoginError }: LoginViewPro
             <View style={loginStyles.infoContainer}>
               <Text style={loginStyles.infoTitle}>Conectando con API .NET</Text>
               <Text style={loginStyles.infoText}>
-                Usuario: usser-admin | Contraseña: admin123-
+                Usuario: usser-admin | Contraseña: admin123
               </Text>
             </View>
 

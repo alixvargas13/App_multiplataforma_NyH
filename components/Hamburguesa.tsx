@@ -1,6 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { hamburguesaStyles as styles } from './ui/Styles/Hamburguesa.styles';
 
 interface HamburguesaProps {
@@ -55,7 +55,11 @@ export function Hamburguesa({
         </View>
 
         {/* Opciones del menú */}
-        <View style={styles.menuOptions}>
+        <ScrollView 
+          style={styles.menuOptions}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
           <TouchableOpacity 
             style={[styles.menuItem, currentView === 'inicio' && styles.menuItemActive]}
             onPress={() => {
@@ -146,7 +150,7 @@ export function Hamburguesa({
             <IconSymbol size={24} name="power" color="#6b7280" />
             <Text style={styles.menuItemText}>Salir</Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </View>
     </View>
   );

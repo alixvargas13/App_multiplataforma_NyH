@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "nyh-digital",
-    "slug": "nyh-digital",
+    "slug": "nyh-digital", 
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "nyh-digital",
     "userInterfaceStyle": "automatic",
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.nyhdigital"
     },
     "web": {
       "output": "static",
@@ -37,6 +38,14 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-system-ui",
+        {
+          "userInterfaceStyle": "automatic",
+          "systemBarsBackgroundColor": "#5F1B2D",
+          "systemBarsContentStyle": "light"
         }
       ]
     ],

@@ -32,7 +32,7 @@ export const hamburguesaStyles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 1000, // Asegura que esté por encima de todo
-    flexDirection: 'row-reverse', // Menú desde la derecha
+  flexDirection: 'row-reverse', // Menú desde la derecha
   },
   sideMenuBackground: {
     flex: 1,
@@ -44,7 +44,7 @@ export const hamburguesaStyles = StyleSheet.create({
     width: 280, // Ancho fijo del menú
     backgroundColor: '#FFFDED',
     elevation: 8, // Sombra para Android
-    boxShadow: '2px 0 8px rgba(0, 0, 0, 0.3)', // Sombra para web
+    boxShadow: '2px 0 8px rgba(0, 0, 0, 0.3)', // Sombra hacia la derecha para menú izquierdo
   },
 
   // HEADER DEL USUARIO
@@ -54,20 +54,6 @@ export const hamburguesaStyles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 16,
     position: 'relative', // Para posicionar el botón de regreso
-  },
-
-  // BOTÓN DE REGRESO
-  backButton: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    padding: 8,
-    zIndex: 1, // Por encima del header
-  },
-  backButtonText: {
-    fontSize: 32,
-    color: '#FFFDED',
-    fontWeight: '300', // Flecha delgada y elegante
   },
 
   // INFORMACIÓN DEL USUARIO
@@ -84,6 +70,35 @@ export const hamburguesaStyles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+
+  // BOTÓN DE REGRESO
+  backButton: {
+    position: 'absolute',
+    top: 110,              // Posición más arriba en el header
+    right: -16,           // Más hacia adentro del menú
+    width: 36,           // Tamaño fijo circular
+    height: 36,          // Tamaño fijo circular  
+    borderRadius: 14,    // Círculo perfecto (mitad del width/height)
+    borderColor: '#FFFDED', 
+    borderWidth: 3,
+    backgroundColor: '#5F1B2D',
+    justifyContent: 'center',     // Centrar contenido verticalmente
+    alignItems: 'center',         // Centrar contenido horizontalmente
+    elevation: 4,                 // Sombra para Android
+    shadowColor: '#000',          // Sombra para iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  backButtonText: {
+    fontSize: 20,                 // Tamaño ajustado para el círculo
+    color: '#FFFDED',
+    fontWeight: 'bold',           // Más definido
+    lineHeight: 20,               // Centrado perfecto
+    textAlign: 'center',          // Centrado horizontal
+  },
+
+
   userAvatarText: {
     fontSize: 20,
     fontWeight: 'bold',

@@ -6,18 +6,27 @@
  * 
  */
 
-import { StyleSheet } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+
+// Detectar orientación para móvil
+const { width, height } = Dimensions.get('window');
+const isLandscape = width > height;
 
 export const topBarStyles = StyleSheet.create({
   // CONTENEDOR PRINCIPAL DE LA BARRA
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: 22,
     backgroundColor: 'rgb(95,27,45)', // Color corporativo oficial
     paddingHorizontal: 16,
     paddingVertical: 12,
     elevation: 4, // Sombra para Android
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', // Sombra para web
+    // MÁRGENES ESPECÍFICOS PARA MÓVIL SOLO
+    ...(Platform.OS !== 'web' && {
+      marginTop: isLandscape ? 8 : 12, // Landscape: 8, Portrait: 20
+    }),
   },
 
   // BOTÓN HAMBURGUESA

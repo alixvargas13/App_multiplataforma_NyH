@@ -1,16 +1,15 @@
 /**
- * 🎯 TOP BAR COMPONENT
+ *  TOP BAR COMPONENT
  * 
  * Componente atómico para la barra superior del sistema.
  * Contiene el botón hamburguesa y el título principal.
  * 
- * 🎨 Características:
+ *  Características:
  * - Diseño consistente con branding corporativo
  * - Botón hamburguesa animado (3 líneas)
  * - Título centrado con espaciador
  * - Colores oficiales del Gobierno de Puebla
  * 
- * @author Tu equipo de desarrollo ❤️
  */
 
 import React from 'react';
