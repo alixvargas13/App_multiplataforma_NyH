@@ -25,7 +25,7 @@
  */
 
 import React from 'react';
-import { ImageBackground, Platform, View } from 'react-native';
+import { ImageBackground, Platform, ScrollView, View } from 'react-native';
 import { BusquedaRfcView } from './BusquedaRfcView';
 import { Hamburguesa } from './Hamburguesa';
 import { InfoView } from './ui/DataView';
@@ -102,7 +102,11 @@ export function MenuPrincipal({
         />
 
         {/* CONTENIDO PRINCIPAL - Aquí se muestran las diferentes vistas */}
-        <View style={styles.mainContent}>
+        <ScrollView 
+          style={styles.mainContent}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
           
           {/* VISTA DE INICIO - Componente ServiceGrid atomico */}
           {currentView === 'inicio' && (
@@ -144,7 +148,7 @@ export function MenuPrincipal({
               loading={loadingData}
             />
           )}
-        </View>
+        </ScrollView>
       </View>
     </ImageBackground>
   );
